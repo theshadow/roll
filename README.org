@@ -1,0 +1,4 @@
+* roll - A project for parsing and working with dice.
+
+- ~formula/~ :: Library for parsing roll formula's
+- ~dice.go~ :: Library for rolling dice
