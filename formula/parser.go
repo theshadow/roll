@@ -11,6 +11,7 @@ type Roll struct {
 	Count int
 	Sides int
 	Modifier int
+	Extensions map[string][]string
 }
 
 /**
@@ -43,8 +44,10 @@ func New() Parser {
 	return parser{}
 }
 
+// https://regexr.com/451jd
+const rexpr = `(?P<formula>(?P<count>\d+)?d(?P<sides>\d+)((?P<sign>[+|\-])(?P<modifier>\d+))?(\ ((?P<extname>[[:alpha:]][[:word:]]+)\((?P<extparams>([[:word:]]+)(,\ ?([[:word:]]+))*)*\)))*)`
 // re defines a regular expression that can match and extract the parts of a roll formula
-var re = regexp.MustCompile(`(?P<count>\d+)?d(?P<sides>\d+)((?P<sign>[+|\-])(?P<modifier>\d+))?`)
+var re = regexp.MustCompile(rexpr)
 
 type parser struct {}
 
