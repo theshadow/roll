@@ -47,3 +47,7 @@ This interface provides the =RollWithFormula(formula.Formula) (FormulaRoll, erro
 A FormulaRoll contains the formula passed in, the result of the rolls, and any
 messages provided by extensions.
 
+*** Extensions Interface
+
+The extension interface allows the programmer to add additional information 
+to the result of a roll. 
