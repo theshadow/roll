@@ -163,7 +163,7 @@ func (ext AdvantageExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	sec := Roll1(r.Sides) + r.Modifier
 
 	if sec > fr.Rolls[0] {
-		return fmt.Sprintf("An advantage was had, you rolled a higher dice with %d", sec), nil
+		return fmt.Sprintf("An advantage was had, you rolled a higher die with %d", sec), nil
 	}
 
 	return "", nil
@@ -185,7 +185,7 @@ func (ext DisadvantageExtension) Exec(fr Results, r formula.Roll) (string, error
 	sec := Roll1(r.Sides) + r.Modifier
 
 	if sec < fr.Rolls[0] {
-		return fmt.Sprintf("an disadvantage was had, you rolled a lower dice with %d", sec), nil
+		return fmt.Sprintf("an disadvantage was had, you rolled a lower die with %d", sec), nil
 	}
 
 	return "", nil
