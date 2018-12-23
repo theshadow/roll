@@ -6,7 +6,7 @@ import (
 	"log"
 	"strconv"
 
-	"dice/formula"
+	"github.com/theshadow/dice/formula"
 )
 
 const (

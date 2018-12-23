@@ -3,7 +3,7 @@ package dice
 import (
 	"math/rand"
 
-	"dice/formula"
+	"github.com/theshadow/dice/formula"
 )
 
 

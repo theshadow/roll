@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"dice/formula"
+	"github.com/theshadow/dice/formula"
 )
 
 

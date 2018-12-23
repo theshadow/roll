@@ -2,12 +2,12 @@ package formula
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"strconv"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/pkg/errors"
 
-	fp "dice/formula/parser"
+	fp "github.com/theshadow/dice/formula/parser"
 )
 
 func parse(f Formula) (_ Roll, err error) {
