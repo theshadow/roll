@@ -74,9 +74,9 @@ func Roll1(sides int) int {
 
 // Results is a Roll1 that results from rolling with a Formula
 type Results struct {
-	Formula formula.Formula
-	Rolls []int
-	Extensions map[string]string
+	Formula formula.Formula `json:"formula"`
+	Rolls []int `json:"rolls"`
+	Extensions map[string]string `json:"extensions"`
 }
 
 // rollF takes a dice Formula and makes the Roll1 by parsing the formula and then rolling the dice.
