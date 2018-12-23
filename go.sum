@@ -1,4 +1,4 @@
-github.com/antlr/antlr4 v0.0.0-20181218183534-70d9ddcd0a58 h1:d4XWEhUH2DAtqTwT0M3ZtrrTeElFzMFZYPJGpOvYbGc=
-github.com/antlr/antlr4 v0.0.0-20181218183534-70d9ddcd0a58/go.mod h1:T7PbCXFs94rrTttyxjbyT5+/1V8T2TYDejxUfHJjw1Y=
+github.com/antlr/antlr4 v0.0.0-20181221190122-fa19ded83749 h1:sKODvTr11Uh+PSxvpp2o0ziu6EGUe2p9b4ANuU14Cic=
+github.com/antlr/antlr4 v0.0.0-20181221190122-fa19ded83749/go.mod h1:T7PbCXFs94rrTttyxjbyT5+/1V8T2TYDejxUfHJjw1Y=
 github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
