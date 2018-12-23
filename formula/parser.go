@@ -1,12 +1,11 @@
 package formula
 
 import (
-	"errors"
 	"regexp"
 	"strconv"
 )
 
-// Roll represents the component parts of a roll formula that can be used to actually perform a rolling of dice.
+// Roll represents the component parts of a dice formula that can be used to actually perform a rolling of dice.
 type Roll struct {
 	Count int
 	Sides int
@@ -16,7 +15,7 @@ type Roll struct {
 
 /**
  * Formula
- * A roll formula is a string that breaks down the concept of rolling a number of dice
+ * A dice formula is a string that breaks down the concept of rolling a number of dice
  * with a number of sides into an algebraic like form. The idea is to quickly be able
  * to describe a role in a more human friendly way.
  *
@@ -46,33 +45,13 @@ func New() Parser {
 
 // https://regexr.com/451jd
 const rexpr = `(?P<formula>(?P<count>\d+)?d(?P<sides>\d+)((?P<sign>[+|\-])(?P<modifier>\d+))?(\ ((?P<extname>[[:alpha:]][[:word:]]+)\((?P<extparams>([[:word:]]+)(,\ ?([[:word:]]+))*)*\)))*)`
-// re defines a regular expression that can match and extract the parts of a roll formula
+// re defines a regular expression that can match and extract the parts of a dice formula
 var re = regexp.MustCompile(rexpr)
 
 type parser struct {}
 
-func (p parser) Parse(f Formula) (Roll, error) {
-	fs := string(f)
-	if len(fs) < 2 {
-		return Roll{}, errors.New("a valid formula must be at least two characters long, 'd' and a number of sides")
-	}
-	if !re.MatchString(fs) {
-		return Roll{}, errors.New("invalid roll formula")
-	}
-
-	sm := re.FindStringSubmatch(fs)
-	// "formula", "count", "sides", "", "sign", "modifier"
-	count, sides, modifier := p.atoi(sm[1], 1), p.atoi(sm[2], 2), p.atoi(sm[5], 0)
-
-	if sm[4] == "-" {
-			modifier *= -1
-	}
-
-	return Roll{
-		Count: count,
-		Sides: sides,
-		Modifier: modifier,
-	}, nil
+func (p parser) Parse(f Formula) (_ Roll, err error) {
+	return parse(f)
 }
 
 func (p parser) atoi(s string, def int) int {

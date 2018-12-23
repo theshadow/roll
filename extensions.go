@@ -18,15 +18,27 @@ const (
 	DisadvantageExtensionName = "Disadvantage"
 )
 
-// Extension is a Roll addon. They work by providing post-Roll information and meta-information such as the sum of all
+// Extension is a Roll1 addon. They work by providing post-Roll1 information and meta-information such as the sum of all
 // the rolls, noting if any of the dice rolls are critical, or if any of the dice exploded and what the result was.
-// They DO NOT and SHOULD NOT modify the original roll.
+// They DO NOT and SHOULD NOT modify the original dice.
 type Extension interface {
-	Exec(fr FormulaRoll, r formula.Roll) (string, error)
+	Exec(fr Results, r formula.Roll) (string, error)
 	Name() string
 }
 
-func New(name string, params []string) (Extension, error) {
+func New(extensions map[string][]string) ([]Extension, error) {
+	var exts []Extension
+	for ext, params := range extensions {
+		e, err := NewExtension(ext, params)
+		if err != nil {
+			return exts, err
+		}
+		exts = append(exts, e)
+	}
+	return exts, nil
+}
+
+func NewExtension(name string, params []string) (Extension, error) {
 	switch name {
 	case SumExtensionName:
 		return newSumExtension(params), nil
@@ -49,12 +61,12 @@ func newLogRollExtension(params []string) LogRollExtension {
 	return LogRollExtension{}
 }
 
-// LogRollExtension will record the specified Roll formula and the results of each Roll.
+// LogRollExtension will record the specified Roll1 formula and the results of each Roll1.
 type LogRollExtension struct{
 	extension
 }
 func (ext LogRollExtension) Name() string { return LogRollExtensionName }
-func (ext LogRollExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext LogRollExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	var msg = fmt.Sprintf("Rolled: \"%s\" Rolls: %v", string(fr.Formula), fr.Rolls)
 	ext.log.Printf(msg)
 	return msg, nil
@@ -77,16 +89,16 @@ func newCriticalRollExtension(params []string) (CriticalRollExtension, error) {
 	return ext, nil
 }
 
-// CriticalRollExtension when any of the rolls are equal to or greater than the LowerLimit the entire Roll is considered
-// a critical Roll
+// CriticalRollExtension when any of the rolls are equal to or greater than the LowerLimit the entire Roll1 is considered
+// a critical Roll1
 type CriticalRollExtension struct{
-	// LowerLimit any Roll equal to or greater than this value is considered a critical.
+	// LowerLimit any Roll1 equal to or greater than this value is considered a critical.
 	LowerLimit int
 }
 func (ext CriticalRollExtension) Name() string { return CriticalRollExtensionName }
-func (ext CriticalRollExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext CriticalRollExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	if r.Sides > 1 {
-		return "", errors.New("only single die rolls may use the critical roll extension")
+		return "", errors.New("only single die rolls may use the critical dice extension")
 	}
 
 	for _, r := range fr.Rolls {
@@ -119,15 +131,15 @@ func newExplodingDiceExtension(params []string) (ExplodingDiceExtension, error) 
 // an exploding die and an additional die will be rolls. Only those dice in the original set may explode, and each die
 // may only explode once.
 type ExplodingDiceExtension struct{
-	// LowerLimit any Roll equal to or greater than this value is considered a critical.
+	// LowerLimit any Roll1 equal to or greater than this value is considered a critical.
 	LowerLimit int
 }
 func (ext ExplodingDiceExtension) Name() string { return ExplodingDiceName }
-func (ext ExplodingDiceExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext ExplodingDiceExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	var rolls []int
 	for _, roll := range fr.Rolls {
 		if roll >= ext.LowerLimit {
-			rolls = append(rolls, Roll(r.Sides))
+			rolls = append(rolls, Roll1(r.Sides))
 		}
 	}
 
@@ -140,18 +152,18 @@ func newAdvantageExtension(param []string) AdvantageExtension {
 	return AdvantageExtension{}
 }
 
-// AdvantageExtension any single die roll will have an additional die rolled and the higher of the two reported.
+// AdvantageExtension any single die dice will have an additional die rolled and the higher of the two reported.
 type AdvantageExtension struct{}
 func (ext AdvantageExtension) Name() string { return AdvantageExtensionName }
-func (ext AdvantageExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext AdvantageExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	if r.Sides > 1 {
 		return "", errors.New("only single die rolls may use the advantage extension")
 	}
 
-	sec := Roll(r.Sides) + r.Modifier
+	sec := Roll1(r.Sides) + r.Modifier
 
 	if sec > fr.Rolls[0] {
-		return fmt.Sprintf("An advantage was had, you rolled a higher roll with %d", sec), nil
+		return fmt.Sprintf("An advantage was had, you rolled a higher dice with %d", sec), nil
 	}
 
 	return "", nil
@@ -162,18 +174,18 @@ func newDisadvantageExtension(param []string) DisadvantageExtension {
 	return DisadvantageExtension{}
 }
 
-// DisadvantageExtension any single die roll will have an additional die rolled and the lower of the two reported.
+// DisadvantageExtension any single die dice will have an additional die rolled and the lower of the two reported.
 type DisadvantageExtension struct{}
 func (ext DisadvantageExtension) Name() string { return "Disadvantage" }
-func (ext DisadvantageExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext DisadvantageExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	if r.Sides > 1 {
 		return "", errors.New("only single die rolls may use the disadvantage extension")
 	}
 
-	sec := Roll(r.Sides) + r.Modifier
+	sec := Roll1(r.Sides) + r.Modifier
 
 	if sec < fr.Rolls[0] {
-		return fmt.Sprintf("an disadvantage was had, you rolled a lower roll with %d", sec), nil
+		return fmt.Sprintf("an disadvantage was had, you rolled a lower dice with %d", sec), nil
 	}
 
 	return "", nil
@@ -187,7 +199,7 @@ func newSumExtension(params []string) SumExtension {
 // SumExtension calculates the sum of all the rolls and adds in the modifier if one is specified
 type SumExtension struct {}
 func (ext SumExtension) Name() string { return SumExtensionName }
-func (ext SumExtension) Exec(fr FormulaRoll, r formula.Roll) (string, error) {
+func (ext SumExtension) Exec(fr Results, r formula.Roll) (string, error) {
 	if r.Modifier != 0 {
 		return fmt.Sprintf("With the modifier %d, the total is %d", r.Modifier,
 			sumAddModifier(fr.Rolls, r.Modifier)), nil

@@ -1,29 +1,24 @@
 grammar Dice;
 
-formula : count? D sides modifier? extensions? EOF;
-count : DIGIT+ ;
-sides : DIGIT+ ;
-modifier : SIGN DIGIT+ ;
-parameter: DIGIT+ | DQUOTE WORD+ DQUOTE;
-parameters : parameter (COMMA SPACE? parameter) ;
-extensionname : ALPHA WORD+ ;
-extension : extensionname LPAREN parameters RPAREN ;
-extensions : SPACE extension (SPACE extension)*;
-
-fragment D : ('d' | 'D') ;
-
-DIGIT   : [0-9] ;
-ALPHA   : [a-zA-Z] ;
-WORD    : [0-9A-Za-z_] ;
-SIGN    : (PLUS | MINUS) ;
+D       : [dD] ;
+SIGN    : [\-+] ;
 LPAREN  : '(' ;
 RPAREN  : ')' ;
-DQUOTE  : '"' ;
 COMMA   : ',' ;
-PLUS    : '+' ;
-MINUS   : '-' ;
 SPACE   : ' ' ;
 
+WS      : [\r\n\t] -> skip ;
 
+Integer       : [0-9]+ ;
+Id            : [a-zA-Z][A-Za-z0-9]+ ;
+StringLiteral : '"' ~('\'' | '\\' | '\n' | '\r')+ '"' ;
 
-
+formula       : count? sides modifier? extensions ;
+extensions    : (SPACE funccall)* ;
+count         : Integer ;
+sides         : Id ;
+modifier      : SIGN Integer ;
+parameter     : Integer | StringLiteral ;
+parameters    : (parameter COMMA)* parameter ;
+funcname      : Id ;
+funccall      : funcname '(' parameters? ')' ;
