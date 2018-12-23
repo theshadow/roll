@@ -1,4 +1,4 @@
-* roll - A project for parsing and working with dice.
+* dice - A project for parsing and working with dice.
 
 It's exactly what it says on the tin. This library
 provides two base primitives for rolling dice. One which
