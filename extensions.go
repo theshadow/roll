@@ -156,7 +156,7 @@ func newAdvantageExtension(param []string) AdvantageExtension {
 type AdvantageExtension struct{}
 func (ext AdvantageExtension) Name() string { return AdvantageExtensionName }
 func (ext AdvantageExtension) Exec(fr Results, r formula.Roll) (string, error) {
-	if r.Sides > 1 {
+	if r.Count > 1 {
 		return "", errors.New("only single die rolls may use the advantage extension")
 	}
 
@@ -178,7 +178,7 @@ func newDisadvantageExtension(param []string) DisadvantageExtension {
 type DisadvantageExtension struct{}
 func (ext DisadvantageExtension) Name() string { return "Disadvantage" }
 func (ext DisadvantageExtension) Exec(fr Results, r formula.Roll) (string, error) {
-	if r.Sides > 1 {
+	if r.Count > 1 {
 		return "", errors.New("only single die rolls may use the disadvantage extension")
 	}
 
