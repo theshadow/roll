@@ -10,24 +10,12 @@ function.
 
 ** Architecture
 
-*** Roller Interface
+*** Roll Interface
 
-One layer above the Roll primitives we provide the Roller interface
-which allows the user to pass in a ~formula.Formula~. It also
-introduces the ~Extensions~ interface. Which allows for additional
-meta information to be added to a roll result such as identifying
-if the roll is a critical roll, or returning the sum of all the rolls.
-
-*** Roll Primitives
-
-#+BEGIN_SRC plantuml
-
-#+END_SRC
-
-The library is broken down into two parts. The rolling and the
-formula. The rolling library functions provide the rolling
-primitives =Roll(int) int= and =RollN(int, int) int=. Which roll
-a single die and multiple dice respectively.
+- =Roll(f formula.Formula) (Results, error)= :: Accepts a formula and parses it into a roll and performs the roll.
+- =RollR(r formula.Roll) (Results, error)= :: Same as =Roll= except it accepts a =formula.Roll= instead.
+- =RollN(n, sides int) (rolls []int) (rolls []int)= :: Rolls *n* dice with the specified number of sides.
+- =Roll1(sides int) int :: Rolls a single die with the specified number of sides.
 
 *** Formula Interface
 
@@ -42,12 +30,70 @@ Those parameters are defined as follows:
 - sides :: A signed integer that defines the number of sides on each die.
 - modifier :: An unsigned integer. Though optional when used the sign (either ~+~ or ~-~) must prefix the value. (e.g. ~+23~ or ~-23~)
 
-This interface provides the =RollWithFormula(formula.Formula) (FormulaRoll, error)=
+This interface provides the =Roll(formula.Formula) (Results, error)=
 [[file:roller.go::13][function]] which will take a formula and return a ~FormulaRoll~.
 A FormulaRoll contains the formula passed in, the result of the rolls, and any
 messages provided by extensions.
 
 *** Extensions Interface
 
-The extension interface allows the programmer to add additional information 
-to the result of a roll. 
+The extension interface allows the programmer to add additional meta information
+to the result of a roll. There exists a collection of built-in extensions which
+you can find out more about in the Extensions section of the document.
+
+The extension interface is pretty simple as defined below:
+
+#+BEGIN_SRC go
+type Extension interface {
+	Exec(fr Results, r formula.Roll) (string, error)
+	Name() string
+}
+#+END_SRC
+
+The basic premise is that the call to the =Exec()= function will return a string which will be set within the results
+under the name of the extension. For example, if you use the *critical* extension with ~criticial(20)~, then the
+=Results.Extension= struct will look like so:
+
+#+BEGIN_SRC go
+exts := map[string]string{"critical": "There was a critical roll with a roll of 20!"}
+#+END_SRC
+
+The idea is to be able to add system specific and house rules to the rolling engine without compromising the
+elegance of the interface as a whole.
+
+** Extensions
+
+Extensions exist as a mechanism to add additional game system mechanics to the dice rolling engine. Though you can
+build your own custom extensions a few are provided with the library by default. Those are outlined below.
+
+*** CriticialRoll - Announce when a roll is equal-to or greater-than the specified threshold
+
+- =criticial(threshold int)= :: threshold is defined as meet or beat
+
+Only allowed with single die rolls, and it will announce if the roll meets or beats the specified threshold.
+
+*** Sum - Provides a summation of all of the rolls.
+
+- =sum()= :: Adds up the total of all of the rolls.
+
+If you're using =Roll()= and you specify a _Modifier_ then this extension is implicitly added for you.
+
+*** Log - Details about the roll
+
+- =log()= :: Adds details about the roll such as the result of each individual roll.
+
+*** Exploding - Rolls additional dice when a roll is equal-to or greater-than a specified threshold.
+
+- exploding(threshold int) :: Will roll an additional die for each of the original rolls that meets or beats the threshold.
+
+Will only explode with the originally specified dice, each die may only explode once.
+
+*** Advantage - Rolls two dice and remarks on the higher of the too if the second roll is higher.
+
+- =advantage()= :: Will roll an additional die and if that value is greater-than the original it will remark on it.
+
+*** Disadvantage - Rolls two dice and remarks on the higher of the too if the second roll is higher.
+
+- =disadvantage()= :: Will roll an additional die and if that value is less-than the original it will remark on it.
+
+

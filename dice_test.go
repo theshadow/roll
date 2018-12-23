@@ -2,8 +2,9 @@ package dice
 
 import (
 	"fmt"
-	"roll/formula"
 	"testing"
+
+	"dice/formula"
 )
 
 

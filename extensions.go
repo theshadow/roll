@@ -6,19 +6,19 @@ import (
 	"log"
 	"strconv"
 
-	"roll/formula"
+	"dice/formula"
 )
 
 const (
-	SumExtensionName          = "Sum"
-	LogRollExtensionName      = "LogRoll"
-	CriticalRollExtensionName = "CriticalRoll"
-	ExplodingDiceName         = "ExplodingDice"
-	AdvantageExtensionName    = "Advantage"
-	DisadvantageExtensionName = "Disadvantage"
+	SumExtensionName          = "sum"
+	LogRollExtensionName      = "log"
+	CriticalRollExtensionName = "critical"
+	ExplodingDiceName         = "exploding"
+	AdvantageExtensionName    = "advantage"
+	DisadvantageExtensionName = "disadvantage"
 )
 
-// Extension is a Roll1 addon. They work by providing post-Roll1 information and meta-information such as the sum of all
+// Extension is a Roll1 add-on. They work by providing post-Roll1 information and meta-information such as the sum of all
 // the rolls, noting if any of the dice rolls are critical, or if any of the dice exploded and what the result was.
 // They DO NOT and SHOULD NOT modify the original dice.
 type Extension interface {
@@ -26,14 +26,14 @@ type Extension interface {
 	Name() string
 }
 
-func New(extensions map[string][]string) ([]Extension, error) {
-	var exts []Extension
+func New(extensions map[string][]string) (map[string]Extension, error) {
+	exts := make(map[string]Extension)
 	for ext, params := range extensions {
 		e, err := NewExtension(ext, params)
 		if err != nil {
 			return exts, err
 		}
-		exts = append(exts, e)
+		exts[ext] = e
 	}
 	return exts, nil
 }

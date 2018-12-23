@@ -1,6 +1,7 @@
 package formula
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -32,6 +33,28 @@ type Roll struct {
  * - 3d10-2  - With negative modifier
  */
 type Formula string
+
+// FromRoll accepts a Roll and attempts to transform it into the formula version.
+func FromRoll(r Roll) (f Formula){
+	count := ""
+	if r.Count > 1 {
+		count = strconv.Itoa(r.Count)
+	}
+
+	modifier := ""
+	if r.Modifier != 0 {
+		if r.Modifier > 0 {
+			modifier = fmt.Sprintf("+%d", r.Modifier)
+		} else {
+			modifier = strconv.Itoa(r.Modifier)
+		}
+	}
+
+	// TODO Build something better populate this. The major issue is detecting integers vs strings.
+	extensions := ""
+
+	return Formula(fmt.Sprintf("%sd%d%s%s", count, r.Sides, modifier, extensions))
+}
 
 // Parser provides a function for consuming a Formula and transforming it into a Roll
 type Parser interface {

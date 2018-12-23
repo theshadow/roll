@@ -1,0 +1,14 @@
+D=1
+SIGN=2
+LPAREN=3
+RPAREN=4
+COMMA=5
+SPACE=6
+WS=7
+Integer=8
+Id=9
+StringLiteral=10
+'('=3
+')'=4
+','=5
+' '=6

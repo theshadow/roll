@@ -7,7 +7,7 @@ import (
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 
-	fp "roll/formula/parser"
+	fp "dice/formula/parser"
 )
 
 func parse(f Formula) (_ Roll, err error) {
