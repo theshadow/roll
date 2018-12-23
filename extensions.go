@@ -97,7 +97,7 @@ type CriticalRollExtension struct{
 }
 func (ext CriticalRollExtension) Name() string { return CriticalRollExtensionName }
 func (ext CriticalRollExtension) Exec(fr Results, r formula.Roll) (string, error) {
-	if r.Sides > 1 {
+	if r.Count > 1 {
 		return "", errors.New("only single die rolls may use the critical dice extension")
 	}
 
