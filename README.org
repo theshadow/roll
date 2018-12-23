@@ -15,7 +15,7 @@ function.
 - =Roll(f formula.Formula) (Results, error)= :: Accepts a formula and parses it into a roll and performs the roll.
 - =RollR(r formula.Roll) (Results, error)= :: Same as =Roll= except it accepts a =formula.Roll= instead.
 - =RollN(n, sides int) (rolls []int) (rolls []int)= :: Rolls *n* dice with the specified number of sides.
-- =Roll1(sides int) int :: Rolls a single die with the specified number of sides.
+- =Roll1(sides int) int= :: Rolls a single die with the specified number of sides.
 
 *** Formula Interface
 
