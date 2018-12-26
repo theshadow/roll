@@ -102,11 +102,11 @@ If you're using =Roll()= and you specify a _Modifier_ then this extension is imp
 
 Will only explode with the originally specified dice, each die may only explode once.
 
-*** Advantage - Rolls two dice and remarks on the higher of the too if the second roll is higher.
+*** Advantage - Rolls two dice and remarks on the higher of the two if the second roll is higher.
 
 - =advantage()= :: Will roll an additional die and if that value is greater-than the original it will remark on it.
 
-*** Disadvantage - Rolls two dice and remarks on the higher of the too if the second roll is higher.
+*** Disadvantage - Rolls two dice and remarks on the lower of the two if the second roll is lower.
 
 - =disadvantage()= :: Will roll an additional die and if that value is less-than the original it will remark on it.
 
